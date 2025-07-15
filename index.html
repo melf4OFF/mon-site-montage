@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Commandes - Formules</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+      background-color: #f5f5f5;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+    }
+    .formule {
+      background: white;
+      padding: 1rem;
+      margin: 1rem auto;
+      border-radius: 10px;
+      max-width: 500px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+    label {
+      margin: 0.5rem 0 0.2rem;
+    }
+    input, select, textarea, button {
+      padding: 0.5rem;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+    }
+    button {
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <h1>Choisissez votre formule</h1>
+
+  <div class="formule">
+    <h2>Formulaire de commande</h2>
+    <form id="commandeForm">
+      <label for="pseudo">Votre pseudo Discord :</label>
+      <input type="text" id="pseudo" name="pseudo" required>
+
+      <label for="formule">Formule choisie :</label>
+      <select id="formule" name="formule" required>
+        <option value="Bronze">Bronze - Basique</option>
+        <option value="Silver">Silver - Intermédiaire</option>
+        <option value="Gold">Gold - Premium</option>
+      </select>
+
+      <label for="message">Détails ou demande spécifique :</label>
+      <textarea id="message" name="message" rows="4"></textarea>
+
+      <button type="submit">Envoyer la commande</button>
+    </form>
+    <p id="status"></p>
+  </div>
+
+  <script>
+    const form = document.getElementById('commandeForm');
+    const status = document.getElementById('status');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const pseudo = form.pseudo.value;
+      const formule = form.formule.value;
+      const message = form.message.value;
+
+      const contenu = `**Nouvelle commande :**\n\n👤 Pseudo : ${pseudo}\n📦 Formule : ${formule}\n📝 Message : ${message || 'Aucun'} `;
+
+      try {
+        await fetch('TON_WEBHOOK_DISCORD_ICI', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            content: contenu,
+          })
+        });
+
+        status.textContent = "Commande envoyée avec succès !";
+        form.reset();
+      } catch (err) {
+        console.error(err);
+        status.textContent = "Erreur lors de l'envoi de la commande.";
+      }
+    });
+  </script>
+</body>
+</html>
